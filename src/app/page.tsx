@@ -147,35 +147,7 @@ export default function Home() {
 
         {/* Main Heading */}
         <h1 className="text-4xl font-bold text-gray-900 mb-4">Sign in with myGov</h1>
-        <p className="text-xl text-gray-600 mb-8">Choose how to sign in</p>
 
-        {/* Sign in Options */}
-        <div className="space-y-4 mb-8">
-          <Button className="w-full h-14 bg-[#87CEEB] hover:bg-[#7DD3FC] text-black text-lg font-medium rounded-lg">
-            Sign in with Digital ID
-          </Button>
-
-          <Button className="w-full h-14 bg-[#87CEEB] hover:bg-[#7DD3FC] text-black text-lg font-medium rounded-lg flex items-center justify-center gap-2">
-            <Key size={20} className="text-black" />
-            Sign in with passkey
-          </Button>
-        </div>
-
-        {/* Learn about passkeys */}
-        <div className="flex items-center gap-2 mb-8">
-          <Info size={16} className="text-gray-500" />
-          <a href="#" className="text-[#0066CC] underline">
-            Learn about passkeys
-          </a>
-        </div>
-
-        {/* Divider */}
-        <div className="relative mb-8">
-          <Separator className="bg-gray-300" />
-          <div className="absolute inset-x-0 top-0 flex justify-center">
-            <span className="bg-gray-50 px-4 text-gray-500 border border-gray-300 rounded-full">or</span>
-          </div>
-        </div>
 
         {/* Traditional Login Form */}
         <div className="space-y-6">
