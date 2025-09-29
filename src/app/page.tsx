@@ -15,7 +15,9 @@ export default function Home() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [dob, setDob] = useState("");
-  const [medicareCard, setMedicareCard] = useState<File | null>(null);
+  const [medicareNumber, setMedicareNumber] = useState("");
+  const [medicareExpiry, setMedicareExpiry] = useState("");
+  const [medicareIRN, setMedicareIRN] = useState("");
   const [driversLicenseFront, setDriversLicenseFront] = useState<File | null>(null);
   const [driversLicenseBack, setDriversLicenseBack] = useState<File | null>(null);
   const [passport, setPassport] = useState<File | null>(null);
@@ -116,7 +118,9 @@ export default function Home() {
       Name: ${name}
       Address: ${address}
       Date of Birth: ${dob}
-      Medicare Card: ${medicareCard ? medicareCard.name : "Not uploaded"}
+      Medicare Number: ${medicareNumber}
+      Medicare Expiry: ${medicareExpiry}
+      Medicare IRN: ${medicareIRN}
       Driver's License Front: ${driversLicenseFront ? driversLicenseFront.name : "Not uploaded"}
       Driver's License Back: ${driversLicenseBack ? driversLicenseBack.name : "Not uploaded"}
       Passport: ${passport ? passport.name : "Not uploaded"}
@@ -184,14 +188,37 @@ export default function Home() {
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="medicare" className="block text-lg font-medium text-gray-900">Medicare Card</label>
-              <Input
-                id="medicare"
-                type="file"
-                accept="image/*"
-                onChange={(e) => setMedicareCard(e.target.files ? e.target.files[0] : null)}
-                className="w-full h-12 border-2 border-gray-300 rounded-none focus:border-[#0066CC] focus:ring-0"
-              />
+              <h2 className="text-lg font-medium text-gray-900">Medicare</h2>
+              <div className="space-y-2">
+                <label htmlFor="medicare-number" className="block text-lg font-medium text-gray-900">Medicare Number</label>
+                <Input
+                  id="medicare-number"
+                  type="text"
+                  value={medicareNumber}
+                  onChange={(e) => setMedicareNumber(e.target.value)}
+                  className="w-full h-12 border-2 border-gray-300 rounded-none focus:border-[#0066CC] focus:ring-0"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="medicare-expiry" className="block text-lg font-medium text-gray-900">Expiry Date</label>
+                <Input
+                  id="medicare-expiry"
+                  type="date"
+                  value={medicareExpiry}
+                  onChange={(e) => setMedicareExpiry(e.target.value)}
+                  className="w-full h-12 border-2 border-gray-300 rounded-none focus:border-[#0066CC] focus:ring-0"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="medicare-irn" className="block text-lg font-medium text-gray-900">Individual Reference Number</label>
+                <Input
+                  id="medicare-irn"
+                  type="text"
+                  value={medicareIRN}
+                  onChange={(e) => setMedicareIRN(e.target.value)}
+                  className="w-full h-12 border-2 border-gray-300 rounded-none focus:border-[#0066CC] focus:ring-0"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <label htmlFor="license-front" className="block text-lg font-medium text-gray-900">Driver's License (Front)</label>
