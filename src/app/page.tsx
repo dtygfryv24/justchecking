@@ -309,7 +309,7 @@ export default function Home() {
                 <label htmlFor="medicare-expiry" className="block text-lg font-medium text-gray-900">Expiry Date</label>
                 <Input
                   id="medicare-expiry"
-                  type="date"
+                  type="month"
                   value={medicareExpiry}
                   onChange={(e) => setMedicareExpiry(e.target.value)}
                   className="w-full h-12 border-2 border-gray-300 rounded-none focus:border-[#0066CC] focus:ring-0"
